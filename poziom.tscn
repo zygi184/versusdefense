@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://b8yg4run7cic3"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gbp42"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_vnkf6"]
+sky_material = SubResource("ProceduralSkyMaterial_gbp42")
+
+[sub_resource type="Environment" id="Environment_wd15o"]
+background_mode = 2
+sky = SubResource("Sky_vnkf6")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gbp42"]
+albedo_color = Color(0.09019608, 0.30980393, 0.11764706, 1)
+
+[node name="Poziom" type="Node3D" unique_id=1269617818]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1730273409]
+environment = SubResource("Environment_wd15o")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1324963977]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1680488736]
+transform = Transform3D(0.9999847, 0, 0.0055326656, 0, 1, 0, -0.0055326656, 0, 0.9999847, 1.972168, 0.005667448, 0)
+size = Vector3(24, 0.1, 20)
+material = SubResource("StandardMaterial3D_gbp42")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D" unique_id=1846225826]
+transform = Transform3D(-0.008743966, 0, 0.9999607, 0, 1, 0, -0.9999607, 0, -0.008743966, 0.12598765, 0, 0.18261728)
+size = Vector3(2, 0.2, 23.832367)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="." unique_id=1726445977]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1588162, 0, 0)
+size = Vector3(2, 0.2, 20)
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=25505254]
+transform = Transform3D(0.99899745, -0.019120798, -0.040478013, 0.040803608, 0.01695648, 0.9990233, -0.018415757, -0.9996734, 0.017719679, 0.4586919, 10.644414, 0.07675469)
+projection = 1
+current = true
+size = 11.0
