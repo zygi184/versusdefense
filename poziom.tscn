@@ -14,7 +14,43 @@ tonemap_mode = 2
 glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gbp42"]
-albedo_color = Color(0.09019608, 0.30980393, 0.11764706, 1)
+albedo_color = Color(0.36677846, 0.2192182, 0.073022164, 1)
+
+[sub_resource type="Curve3D" id="Curve3D_gbp42"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -9.542913, 0, 0.42563367, 0, 0, 0, 0, 0, 0, -1.0401621, 0, 0.7825395, 0, 0, 0, 0, 0, 0, -1.1303418, 0, -8.797272),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vnkf6"]
+albedo_color = Color(1, 0.060000002, 0.060000002, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_wd15o"]
+
+[sub_resource type="FontFile" id="FontFile_gbp42"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/30/0/ascent = 0.0
+cache/0/30/0/descent = 0.0
+cache/0/30/0/underline_position = 0.0
+cache/0/30/0/underline_thickness = 0.0
+cache/0/30/0/scale = 1.0
+
+[sub_resource type="FontVariation" id="FontVariation_vnkf6"]
+base_font = SubResource("FontFile_gbp42")
 
 [node name="Poziom" type="Node3D" unique_id=1269617818]
 
@@ -31,15 +67,54 @@ size = Vector3(24, 0.1, 20)
 material = SubResource("StandardMaterial3D_gbp42")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D" unique_id=1846225826]
-transform = Transform3D(-0.008743966, 0, 0.9999607, 0, 1, 0, -0.9999607, 0, -0.008743966, 0.12598765, 0, 0.18261728)
-size = Vector3(2, 0.2, 23.832367)
+transform = Transform3D(-4.3711307e-08, 0, 0.99999815, 0, 1, 0, -0.99999815, 0, -4.3711307e-08, 0, 0, 0)
+size = Vector3(2, 0.2, 23.990723)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="." unique_id=1726445977]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1588162, 0, 0)
 size = Vector3(2, 0.2, 20)
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=25505254]
-transform = Transform3D(0.99899745, -0.019120798, -0.040478013, 0.040803608, 0.01695648, 0.9990233, -0.018415757, -0.9996734, 0.017719679, 0.4586919, 10.644414, 0.07675469)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 10, 0)
 projection = 1
 current = true
-size = 11.0
+size = 20.0
+
+[node name="Path3D" type="Path3D" parent="." unique_id=824188856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+curve = SubResource("Curve3D_gbp42")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D" unique_id=398546489]
+transform = Transform3D(0.99992186, 0, 0.009412779, 0, 1, 0, -0.009412779, 0, 0.99992186, -1.0743645, 0, -2.8507903)
+progress = 12.143798
+
+[node name="Enemy" type="Enemy" parent="Path3D/PathFollow3D" unique_id=1321989620]
+transform = Transform3D(-0.48866168, 0, -0.8728144, 0, 1, 0, 0.8728144, 0, -0.48866168, -1.9871066, 0, -3.6145267)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Path3D/PathFollow3D/Enemy" unique_id=1425439817]
+transform = Transform3D(-0.9555318, 0, 0.29487884, 0, 1, 0, -0.29487884, 0, -0.9555318, 2.1997833, 1.7546122, -3.251682)
+material_override = SubResource("StandardMaterial3D_vnkf6")
+mesh = SubResource("CapsuleMesh_wd15o")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2038457979]
+
+[node name="BaseHPLabel" type="Label" parent="CanvasLayer" unique_id=1058359754]
+offset_right = 102.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0.22080001, 0.96, 0.31936008, 1)
+theme_override_fonts/font = SubResource("FontVariation_vnkf6")
+theme_override_font_sizes/font_size = 30
+text = "HP BAZY: 100"
+metadata/_edit_use_anchors_ = true
+
+[node name="GoldLabel" type="Label" parent="CanvasLayer" unique_id=1354604421]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -67.0
+offset_bottom = 23.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0.58666605, 0.55782646, 0.063439816, 1)
+theme_override_font_sizes/font_size = 26
+text = "Złoto: 50"
+metadata/_edit_use_anchors_ = true
