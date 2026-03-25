@@ -52,6 +52,12 @@ cache/0/30/0/scale = 1.0
 [sub_resource type="FontVariation" id="FontVariation_vnkf6"]
 base_font = SubResource("FontFile_gbp42")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wd15o"]
+albedo_color = Color(0.5464335, 0.45672268, 0.07342187, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_3fwk8"]
+radius = 5.0
+
 [node name="Poziom" type="Node3D" unique_id=1269617818]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1730273409]
@@ -85,11 +91,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 curve = SubResource("Curve3D_gbp42")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D" unique_id=398546489]
-transform = Transform3D(0.99992186, 0, 0.009412779, 0, 1, 0, -0.009412779, 0, 0.99992186, -1.0743645, 0, -2.8507903)
-progress = 12.143798
+transform = Transform3D(-0.0419369, 0, -0.9990863, 0, 1, 0, 0.9990863, 0, -0.0419369, -4.351966, 0, 0.6435254)
+progress = 5.195345
 
 [node name="Enemy" type="Enemy" parent="Path3D/PathFollow3D" unique_id=1321989620]
-transform = Transform3D(-0.48866168, 0, -0.8728144, 0, 1, 0, 0.8728144, 0, -0.48866168, -1.9871066, 0, -3.6145267)
+transform = Transform3D(-0.4886617, 0, -0.8728145, 0, 1, 0, 0.8728145, 0, -0.4886617, -1.9739281, 0, -4.792301)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Path3D/PathFollow3D/Enemy" unique_id=1425439817]
 transform = Transform3D(-0.9555318, 0, 0.29487884, 0, 1, 0, -0.29487884, 0, -0.9555318, 2.1997833, 1.7546122, -3.251682)
@@ -118,3 +124,14 @@ theme_override_colors/font_color = Color(0.58666605, 0.55782646, 0.063439816, 1)
 theme_override_font_sizes/font_size = 26
 text = "Złoto: 50"
 metadata/_edit_use_anchors_ = true
+
+[node name="Tower" type="Tower" parent="." unique_id=503090933]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.497118, 0.51592636, 1.5259404)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Tower" unique_id=1742468114]
+material = SubResource("StandardMaterial3D_wd15o")
+
+[node name="Zasieg" type="Area3D" parent="Tower" unique_id=1842376069]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tower/Zasieg" unique_id=142934015]
+shape = SubResource("SphereShape3D_3fwk8")

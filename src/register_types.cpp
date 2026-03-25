@@ -3,6 +3,7 @@
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
+#include "tower.h" // plik z wieżą
 
 using namespace godot;
 
@@ -12,6 +13,7 @@ void initialize_versusdefense_module(ModuleInitializationLevel p_level) {
     }
     // rejestrujemy klasę:
     ClassDB::register_class<Enemy>();
+    ClassDB::register_class<Tower>();
 }
 
 void uninitialize_versusdefense_module(ModuleInitializationLevel p_level) {
