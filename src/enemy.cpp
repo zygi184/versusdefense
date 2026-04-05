@@ -20,8 +20,16 @@ void Enemy::_process(double delta) {
     PathFollow3D* wagonik = Object::cast_to<PathFollow3D>(parent);
 
     if (wagonik != nullptr) {
+        // ruch wroga
         double aktualna_pozycja = wagonik->get_progress();
         wagonik->set_progress(aktualna_pozycja + speed * delta);
+
+        // sprawdzamy, czy dojechalismy do konca trasy
+        // get_progress_ratio() zwraca wartosc od 0.0 (start) do 1.0 (koniec)
+        if (wagonik->get_progress_ratio() >= 1.0) {
+            UtilityFunctions::print("Wrog przedarl sie przez obrone! Baza traci HP!");
+            queue_free(); // usuwamy wroga ze sceny, zeby nie stal na koncu torow
+        }
     }
 }
 
