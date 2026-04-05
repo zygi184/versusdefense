@@ -1,7 +1,7 @@
 #include "tower.h"
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
-#include <godot_cpp/classes/area3d.hpp> // obsluga stref (radarow i hitboxow)
+#include <godot_cpp/classes/area3d.hpp>
 #include "enemy.h"
 
 using namespace godot;
@@ -11,38 +11,41 @@ void Tower::_bind_methods() {}
 Tower::Tower() {
     damage = 25.0;
     range = 5.0;
+    fire_rate = 1.0; // wieza strzela dokladnie 1 raz na sekunde
+    time_since_last_shot = 0.0; // stoper startuje od zera
 }
 
 Tower::~Tower() {}
 
 void Tower::_process(double delta) {
-    // znajdujemy radar
-    Area3D* radar = Object::cast_to<Area3D>(get_node_or_null("Zasieg"));
+    // zwiekszamy stoper o czas, ktory minal od ostatniej klatki
+    time_since_last_shot += delta;
 
-    if (radar != nullptr) {
-        // pobieramy liste wszystkich obiektow w zasiegu radaru
-        TypedArray<Area3D> obiekty_w_zasiegu = radar->get_overlapping_areas();
+    // wieza w ogole probuje szukac celu TYLKO, jesli minela juz sekunda od ostatniego strzalu
+    if (time_since_last_shot >= fire_rate) {
+        
+        Area3D* radar = Object::cast_to<Area3D>(get_node_or_null("Zasieg"));
 
-        // przegladamy te liste w poszukiwaniu wroga
-        for (int i = 0; i < obiekty_w_zasiegu.size(); i++) {
-            Area3D* cel = Object::cast_to<Area3D>(obiekty_w_zasiegu[i]);
-            
-            // jesli obiekt ma latke "wrogowie", to znaczy, ze znalezlismy ofiare
-            if (cel != nullptr && cel->is_in_group("wrogowie")) {
+        if (radar != nullptr) {
+            TypedArray<Area3D> obiekty_w_zasiegu = radar->get_overlapping_areas();
+
+            for (int i = 0; i < obiekty_w_zasiegu.size(); i++) {
+                Area3D* cel = Object::cast_to<Area3D>(obiekty_w_zasiegu[i]);
                 
-                // kod wroga siedzi w obiekcie nadrzednym (rodzicu).
-                Node* rodzic = cel->get_parent();
-                
-                // tłumaczymy pamięci komputera, że ten rodzic to nasza klasa Enemy z C++.
-                Enemy* wrog = Object::cast_to<Enemy>(rodzic);
+                if (cel != nullptr && cel->is_in_group("wrogowie")) {
+                    
+                    Node* rodzic = cel->get_parent();
+                    Enemy* wrog = Object::cast_to<Enemy>(rodzic);
 
-                // jeśli udało się znaleźć wroga, uderzamy bezpośrednio w jego funkcj
-                if (wrog != nullptr) {
-                    wrog->take_damage(25); // zadajemy 25 obrażeń
+                    if (wrog != nullptr) {
+                        wrog->take_damage(25); 
+                        
+                        // po udanym strzale zerujemy stoper, wieza znowu musi czekac sekunde
+                        time_since_last_shot = 0.0; 
+                    }
+                    
+                    break; 
                 }
-                
-                // przerywamy petle, zeby wieza strzelala tylko do jednego na raz
-                break; 
             }
         }
     }

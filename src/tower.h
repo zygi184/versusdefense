@@ -11,6 +11,8 @@ class Tower : public Node3D {
 private:
     float damage;
     float range;
+    double fire_rate; // szybkostrzelnosc (czas miedzy strzalami)
+    double time_since_last_shot; // stoper odmierzajacy czas
 
 protected:
     static void _bind_methods();

@@ -93,8 +93,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 curve = SubResource("Curve3D_gbp42")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D" unique_id=398546489]
-transform = Transform3D(0.9999218, 0, 0.009412778, 0, 1, 0, -0.009412778, 0, 0.9999218, -1.0698903, 0, -2.3755026)
-progress = 11.668486
+transform = Transform3D(0.9999218, 0, 0.009412778, 0, 1, 0, -0.009412778, 0, 0.9999218, -1.0439448, 0, 0.38070437)
+progress = 8.910093
 
 [node name="Enemy" type="Enemy" parent="Path3D/PathFollow3D" unique_id=1321989620]
 transform = Transform3D(-0.4886617, 0, -0.8728145, 0, 1, 0, 0.8728145, 0, -0.4886617, -1.9739281, 0, -4.792301)
