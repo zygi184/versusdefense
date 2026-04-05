@@ -10,7 +10,7 @@ class Enemy : public Node3D {
 
 private:
     int hp;
-    float speed;
+    double speed;
 
 protected:
     static void _bind_methods();
@@ -20,7 +20,9 @@ public:
     ~Enemy();
 
     void _process(double delta) override;
+    void take_damage(int amount);
 };
 
 }
+
 #endif

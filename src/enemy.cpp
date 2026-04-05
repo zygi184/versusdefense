@@ -22,9 +22,15 @@ void Enemy::_process(double delta) {
     if (wagonik != nullptr) {
         double aktualna_pozycja = wagonik->get_progress();
         wagonik->set_progress(aktualna_pozycja + speed * delta);
-        // linijka wysylajaca nam raport do konsoli Godota
-        //UtilityFunctions::print("Wagonik jedzie!"); 
-    } else {
-        UtilityFunctions::print("Blad: Nie moge znalezc wagonika!");
+    }
+}
+
+void Enemy::take_damage(int amount) {
+    hp -= amount;
+    UtilityFunctions::print("Aua! Zostalo mi: ", hp, " HP");
+
+    if (hp <= 0) {
+        UtilityFunctions::print("Wrog pokonany!");
+        queue_free();
     }
 }
