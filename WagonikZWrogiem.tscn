@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cngbeyh1g6fho"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cy8p1"]
+albedo_color = Color(0.9841836, 0, 0.015802674, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_h1ftp"]
+
+[node name="PathFollow3D" type="PathFollow3D" unique_id=2135690950]
+transform = Transform3D(0.99992186, 0, 0.009412778, 0, 1, 0, -0.009412778, 0, 0.99992186, 0, 0, 0)
+loop = false
+
+[node name="Enemy" type="Enemy" parent="." unique_id=2110003219]
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Enemy" unique_id=1083873147]
+transform = Transform3D(1, 0, 1.8626451e-09, 0, 1, 0, -1.8626451e-09, 0, 1, -0.0029996634, 0, 0.31865883)
+material_override = SubResource("StandardMaterial3D_cy8p1")
+
+[node name="Hitbox" type="Area3D" parent="Enemy" unique_id=687382703 groups=["wrogowie"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Enemy/Hitbox" unique_id=1235743392]
+shape = SubResource("SphereShape3D_h1ftp")

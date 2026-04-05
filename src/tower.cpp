@@ -3,6 +3,7 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/area3d.hpp>
 #include "enemy.h"
+#include <godot_cpp/classes/engine.hpp>
 
 using namespace godot;
 
@@ -18,6 +19,9 @@ Tower::Tower() {
 Tower::~Tower() {}
 
 void Tower::_process(double delta) {
+    if (Engine::get_singleton()->is_editor_hint()) {
+         return; 
+        }
     // zwiekszamy stoper o czas, ktory minal od ostatniej klatki
     time_since_last_shot += delta;
 

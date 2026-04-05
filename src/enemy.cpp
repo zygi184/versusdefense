@@ -2,6 +2,7 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/path_follow3d.hpp>
+#include <godot_cpp/classes/engine.hpp>
 
 using namespace godot;
 
@@ -15,20 +16,34 @@ Enemy::Enemy() {
 
 Enemy::~Enemy() {}
 
+// Dodaj ten include na górze pliku, jeśli go nie masz
+#include <godot_cpp/classes/label.hpp>
+
 void Enemy::_process(double delta) {
+    
+    if (Engine::get_singleton()->is_editor_hint()) {
+        return;
+    }
+
     Node* parent = get_parent();
     PathFollow3D* wagonik = Object::cast_to<PathFollow3D>(parent);
 
     if (wagonik != nullptr) {
-        // ruch wroga
         double aktualna_pozycja = wagonik->get_progress();
         wagonik->set_progress(aktualna_pozycja + speed * delta);
 
-        // sprawdzamy, czy dojechalismy do konca trasy
-        // get_progress_ratio() zwraca wartosc od 0.0 (start) do 1.0 (koniec)
         if (wagonik->get_progress_ratio() >= 1.0) {
-            UtilityFunctions::print("Wrog przedarl sie przez obrone! Baza traci HP!");
-            queue_free(); // usuwamy wroga ze sceny, zeby nie stal na koncu torow
+            // szukamy etykiety HP w scenie)
+            Label* hp_label = Object::cast_to<Label>(get_node_or_null("/root/Poziom/CanvasLayer/BaseHPLabel"));
+            
+            if (hp_label != nullptr) {
+                // pobieramy aktualny tekst, zamieniamy na liczbę, odejmujemy 1 i zapisujemy z powrotem
+                int aktualne_hp = hp_label->get_text().to_int();
+                hp_label->set_text(String::num_int64(aktualne_hp - 10)); // baza traci np. 10 HP
+            }
+
+            UtilityFunctions::print("Wrog uderzyl w baze!");
+            queue_free(); 
         }
     }
 }
