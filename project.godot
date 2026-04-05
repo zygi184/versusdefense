@@ -13,6 +13,8 @@ config_version=5
 config/name="Versus Defense"
 run/main_scene="uid://b8yg4run7cic3"
 config/features=PackedStringArray("4.6", "Forward Plus")
+run/max_fps=60
+run/low_processor_mode=true
 config/icon="res://icon.svg"
 
 [physics]

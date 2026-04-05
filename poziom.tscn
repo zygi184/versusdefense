@@ -28,6 +28,8 @@ albedo_color = Color(1, 0.060000002, 0.060000002, 1)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_wd15o"]
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gbp42"]
+
 [sub_resource type="FontFile" id="FontFile_gbp42"]
 cache/0/variation_coordinates = {}
 cache/0/face_index = 0
@@ -91,8 +93,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 curve = SubResource("Curve3D_gbp42")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D" unique_id=398546489]
-transform = Transform3D(-0.0419369, 0, -0.9990863, 0, 1, 0, 0.9990863, 0, -0.0419369, -4.351966, 0, 0.6435254)
-progress = 5.195345
+transform = Transform3D(0.9999218, 0, 0.009412778, 0, 1, 0, -0.009412778, 0, 0.9999218, -1.0698903, 0, -2.3755026)
+progress = 11.668486
 
 [node name="Enemy" type="Enemy" parent="Path3D/PathFollow3D" unique_id=1321989620]
 transform = Transform3D(-0.4886617, 0, -0.8728145, 0, 1, 0, 0.8728145, 0, -0.4886617, -1.9739281, 0, -4.792301)
@@ -101,6 +103,12 @@ transform = Transform3D(-0.4886617, 0, -0.8728145, 0, 1, 0, 0.8728145, 0, -0.488
 transform = Transform3D(-0.9555318, 0, 0.29487884, 0, 1, 0, -0.29487884, 0, -0.9555318, 2.1997833, 1.7546122, -3.251682)
 material_override = SubResource("StandardMaterial3D_vnkf6")
 mesh = SubResource("CapsuleMesh_wd15o")
+
+[node name="Hitbox" type="Area3D" parent="Path3D/PathFollow3D/Enemy" unique_id=1727545678 groups=["wrogowie"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D/PathFollow3D/Enemy/Hitbox" unique_id=270396838]
+transform = Transform3D(0.99999905, 0, -5.364418e-07, 0, 1, 0, 5.364418e-07, 0, 0.99999905, 2.2396276, 1.8990469, -3.267836)
+shape = SubResource("CapsuleShape3D_gbp42")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2038457979]
 
