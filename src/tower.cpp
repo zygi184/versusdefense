@@ -4,6 +4,8 @@
 #include <godot_cpp/classes/area3d.hpp>
 #include "enemy.h"
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/label.hpp>
+#include <godot_cpp/classes/button.hpp>
 
 using namespace godot;
 
@@ -12,16 +14,53 @@ void Tower::_bind_methods() {}
 Tower::Tower() {
     damage = 100.0;
     range = 5.0;
-    fire_rate = 0.5; // wieza strzela dokladnie 1 raz na sekunde
-    time_since_last_shot = 0.0; // stoper startuje od zera
+    fire_rate = 0.5; 
+    time_since_last_shot = 0.0;
+    button_was_pressed = false; 
 }
 
 Tower::~Tower() {}
 
+void Tower::upgrade_tower() {
+    Label* gold_label = Object::cast_to<Label>(get_node_or_null("/root/Poziom/CanvasLayer/GoldLabel"));
+    
+    if (gold_label != nullptr) {
+        int aktualne_zloto = gold_label->get_text().to_int();
+        int koszt_ulepszenia = 50;
+
+        if (aktualne_zloto >= koszt_ulepszenia) {
+            // zabieramy kase
+            gold_label->set_text(String::num_int64(aktualne_zloto - koszt_ulepszenia));
+            
+            // zwiekszamy statystyki (np. szybkosc strzalu o 10 procent i 25 damage)
+            fire_rate *= 0.9; 
+            damage += 25.0;
+            
+            UtilityFunctions::print("Wieza ulepszona! Nowy damage: ", damage);
+        } else {
+            UtilityFunctions::print("Za malo zlota na ulepszenie!");
+        }
+    }
+}
+
 void Tower::_process(double delta) {
     if (Engine::get_singleton()->is_editor_hint()) {
          return; 
+    }
+    
+    Button* btn = Object::cast_to<Button>(get_node_or_null("/root/Poziom/CanvasLayer/Button"));
+    
+    if (btn != nullptr) {
+        bool is_pressed = btn->is_pressed();
+        
+        // jesli przycisk jest wcisniety TERAZ, a klatke wczesniej NIE BYL
+        if (is_pressed && !button_was_pressed) {
+            upgrade_tower(); // wywolujemy funkcje ulepszenia!
         }
+        
+        button_was_pressed = is_pressed; // zapamietujemy stan na nastepna klatke
+    }
+
     // zwiekszamy stoper o czas, ktory minal od ostatniej klatki
     time_since_last_shot += delta;
 
