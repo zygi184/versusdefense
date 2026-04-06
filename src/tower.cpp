@@ -10,9 +10,9 @@ using namespace godot;
 void Tower::_bind_methods() {}
 
 Tower::Tower() {
-    damage = 25.0;
+    damage = 100.0;
     range = 5.0;
-    fire_rate = 1.0; // wieza strzela dokladnie 1 raz na sekunde
+    fire_rate = 0.5; // wieza strzela dokladnie 1 raz na sekunde
     time_since_last_shot = 0.0; // stoper startuje od zera
 }
 
@@ -42,7 +42,7 @@ void Tower::_process(double delta) {
                     Enemy* wrog = Object::cast_to<Enemy>(rodzic);
 
                     if (wrog != nullptr) {
-                        wrog->take_damage(25); 
+                        wrog->take_damage((int)damage); 
                         
                         // po udanym strzale zerujemy stoper, wieza znowu musi czekac sekunde
                         time_since_last_shot = 0.0; 

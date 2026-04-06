@@ -12,8 +12,15 @@ class Spawner : public Node3D {
 
 private:
     double timer;
-    double spawn_delay; // co ile sekund ma pojawic sie wrog
-    Ref<PackedScene> enemy_scene; // tu bedzie przechowywana scena wroga (.tscn)
+    double spawn_delay;
+    Ref<PackedScene> enemy_scene;
+    
+    // obsluga fal
+    int obecna_fala;
+    int wrogowie_w_fali;
+    int wyprodukowani_wrogowie;
+    double czas_do_kolejnej_fali;
+    bool przerwa_miedzy_falami;
 
 protected:
     static void _bind_methods();

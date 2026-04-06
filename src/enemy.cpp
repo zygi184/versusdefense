@@ -3,6 +3,7 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/path_follow3d.hpp>
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/label.hpp>
 
 using namespace godot;
 
@@ -15,9 +16,6 @@ Enemy::Enemy() {
 }
 
 Enemy::~Enemy() {}
-
-// Dodaj ten include na górze pliku, jeśli go nie masz
-#include <godot_cpp/classes/label.hpp>
 
 void Enemy::_process(double delta) {
     
@@ -53,7 +51,19 @@ void Enemy::take_damage(int amount) {
     UtilityFunctions::print("Aua! Zostalo mi: ", hp, " HP");
 
     if (hp <= 0) {
-        UtilityFunctions::print("Wrog pokonany!");
+        UtilityFunctions::print("Wrog pokonany! Zarabiasz zloto.");
+        
+        Label* gold_label = Object::cast_to<Label>(get_node_or_null("/root/Poziom/CanvasLayer/GoldLabel"));
+        
+        if (gold_label != nullptr) {
+            int aktualne_zloto = gold_label->get_text().to_int();
+            gold_label->set_text(String::num_int64(aktualne_zloto + 15)); 
+        }
+
         queue_free();
     }
+}
+
+void Enemy::set_max_hp(int new_hp) {
+    hp = new_hp;
 }

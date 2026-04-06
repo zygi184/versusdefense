@@ -1,8 +1,9 @@
 #include "spawner.h"
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/path_follow3d.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
+#include "enemy.h" 
 
 using namespace godot;
 
@@ -10,9 +11,14 @@ void Spawner::_bind_methods() {}
 
 Spawner::Spawner() {
     timer = 0.0;
-    spawn_delay = 4.0; // nowy wrog co 4 sekundy
+    spawn_delay = 1.0; // wrogowie wychodza co 1 sekunde w trakcie fali
     
-    // automatyczne ladowanie sceny wagonika z wrogiem
+    obecna_fala = 1;
+    wrogowie_w_fali = 3; // pierwsza fala ma 3 wrogow
+    wyprodukowani_wrogowie = 0;
+    czas_do_kolejnej_fali = 5.0; // 5 sekund odpoczynku przed nowa fala
+    przerwa_miedzy_falami = true; 
+    
     ResourceLoader *re_loader = ResourceLoader::get_singleton();
     enemy_scene = re_loader->load("res://WagonikZWrogiem.tscn");
 }
@@ -20,27 +26,51 @@ Spawner::Spawner() {
 Spawner::~Spawner() {}
 
 void Spawner::_process(double delta) {
-   
     if (Engine::get_singleton()->is_editor_hint()) {
         return;
     }
-    
+
     timer += delta;
 
-    if (timer >= spawn_delay) {
-        timer = 0.0;
+    // sprawdzamy, czy gra czeka na rozpoczecie nowej fali
+    if (przerwa_miedzy_falami) {
+        if (timer >= czas_do_kolejnej_fali) {
+            przerwa_miedzy_falami = false;
+            timer = 0.0;
+            wyprodukowani_wrogowie = 0;
+            UtilityFunctions::print("Rozpoczyna sie fala: ", obecna_fala);
+        }
+    } 
+    // jesli fala trwa, produkujemy wrogow
+    else {
+        if (timer >= spawn_delay) {
+            timer = 0.0;
 
-        if (enemy_scene.is_valid()) {
-            // tworzymy nowa instancje wroga
-            Node *nowy_wrog = enemy_scene->instantiate();
-            
-            // szukamy Path3D, do ktorego mamy dodac wroga
-            // zakladamy, ze Spawner jest dzieckiem lub sasiadem Path3D
-            Node *path_node = get_node_or_null("../Path3D"); 
-            
-            if (path_node != nullptr) {
-                path_node->add_child(nowy_wrog);
-                UtilityFunctions::print("Nowy wrog nadchodzi!");
+            if (enemy_scene.is_valid()) {
+                Node *nowy_wrog = enemy_scene->instantiate();
+                Node *path_node = get_node_or_null("../Path3D"); 
+                
+                if (path_node != nullptr) {
+                    path_node->add_child(nowy_wrog);
+                    
+                    // dobieramy sie do wroga i zwiekszamy mu HP w zaleznosci od fali
+                    // zaczynaja z 100 HP, a kazda kolejna fala daje +50 HP
+                    Enemy* kod_wroga = Object::cast_to<Enemy>(nowy_wrog->get_node_or_null("Enemy"));
+                    if (kod_wroga != nullptr) {
+                        kod_wroga->set_max_hp(50 + (obecna_fala * 50)); 
+                    }
+
+                    wyprodukowani_wrogowie++;
+                }
+            }
+
+            // jesli wyprodukowalismy wszystkich wrogow na te fale, oglaszamy przerwe
+            if (wyprodukowani_wrogowie >= wrogowie_w_fali) {
+                przerwa_miedzy_falami = true;
+                obecna_fala++;
+                wrogowie_w_fali += 2; // kazda kolejna fala ma o 2 wrogow wiecej
+                timer = 0.0;
+                UtilityFunctions::print("Fala pokonana! Nastepna za 5 sekund.");
             }
         }
     }
