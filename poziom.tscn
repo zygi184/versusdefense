@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://b8yg4run7cic3"]
 
+[ext_resource type="PackedScene" uid="uid://cwv7003xnfycg" path="res://Tower.tscn" id="1_vnkf6"]
+
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gbp42"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -50,12 +52,6 @@ base_font = SubResource("FontFile_gbp42")
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gbp42"]
 
 [sub_resource type="Theme" id="Theme_vnkf6"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wd15o"]
-albedo_color = Color(0.5464335, 0.45672268, 0.07342187, 1)
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_3fwk8"]
-radius = 5.0
 
 [node name="Poziom" type="Node3D" unique_id=1269617818]
 
@@ -115,23 +111,26 @@ metadata/_edit_use_anchors_ = true
 [node name="Button" type="Button" parent="CanvasLayer" unique_id=2022341611]
 material = SubResource("CanvasItemMaterial_gbp42")
 offset_left = 901.0
-offset_top = 587.0
+offset_top = 575.0
 offset_right = 1121.0
-offset_bottom = 629.0
+offset_bottom = 617.0
 theme = SubResource("Theme_vnkf6")
 theme_override_colors/font_color = Color(0, 1, 0.79999995, 1)
 theme_override_font_sizes/font_size = 20
 text = "Ulepsz wieże (50złota)"
 
-[node name="Tower" type="Tower" parent="." unique_id=503090933]
+[node name="BuyTowerButton" type="Button" parent="CanvasLayer" unique_id=2001138057]
+material = SubResource("CanvasItemMaterial_gbp42")
+offset_left = 899.0
+offset_top = 519.0
+offset_right = 1119.0
+offset_bottom = 561.0
+theme = SubResource("Theme_vnkf6")
+theme_override_colors/font_color = Color(0, 1, 0.79999995, 1)
+theme_override_font_sizes/font_size = 20
+text = "Kup wieże (200złota)"
+
+[node name="Tower" parent="." unique_id=1521220261 instance=ExtResource("1_vnkf6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.497118, 0.51592636, 1.5259404)
-
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Tower" unique_id=1742468114]
-material = SubResource("StandardMaterial3D_wd15o")
-
-[node name="Zasieg" type="Area3D" parent="Tower" unique_id=1842376069]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Tower/Zasieg" unique_id=142934015]
-shape = SubResource("SphereShape3D_3fwk8")
 
 [node name="Spawner" type="Spawner" parent="." unique_id=1493837142]

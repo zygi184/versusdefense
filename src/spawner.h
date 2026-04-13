@@ -13,6 +13,8 @@ class Spawner : public Node3D {
 private:
     double timer;
     double spawn_delay;
+    Ref<PackedScene> tower_scene;
+    bool buy_button_was_pressed;
     Ref<PackedScene> enemy_scene;
     
     // obsluga fal

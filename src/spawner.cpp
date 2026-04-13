@@ -4,6 +4,8 @@
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include "enemy.h" 
+#include <godot_cpp/classes/button.hpp>
+#include <godot_cpp/classes/label.hpp>
 
 using namespace godot;
 
@@ -18,8 +20,12 @@ Spawner::Spawner() {
     wyprodukowani_wrogowie = 0;
     czas_do_kolejnej_fali = 5.0; // 5 sekund odpoczynku przed nowa fala
     przerwa_miedzy_falami = true; 
-    
+
     ResourceLoader *re_loader = ResourceLoader::get_singleton();
+
+    buy_button_was_pressed = false;
+    tower_scene = re_loader->load("res://Tower.tscn");
+    
     enemy_scene = re_loader->load("res://WagonikZWrogiem.tscn");
 }
 
@@ -74,4 +80,39 @@ void Spawner::_process(double delta) {
             }
         }
     }
+
+    // RĘCZNA OBSŁUGA KUPUWANIA WIEŻY
+    Button* buy_btn = Object::cast_to<Button>(get_node_or_null("/root/Poziom/CanvasLayer/BuyTowerButton"));
+    
+    if (buy_btn != nullptr) {
+        bool is_pressed = buy_btn->is_pressed();
+        
+        if (is_pressed && !buy_button_was_pressed) {
+            Label* gold_label = Object::cast_to<Label>(get_node_or_null("/root/Poziom/CanvasLayer/GoldLabel"));
+            if (gold_label != nullptr && tower_scene.is_valid()) {
+                int aktualne_zloto = gold_label->get_text().to_int();
+                int koszt_wiezy = 200;
+
+                if (aktualne_zloto >= koszt_wiezy) {
+                    // Zabieramy zloto
+                    gold_label->set_text(String::num_int64(aktualne_zloto - koszt_wiezy));
+                    
+                    // Klonujemy nowa wieze
+                    Node* nowa_wieza = tower_scene->instantiate();
+                    get_parent()->add_child(nowa_wieza);
+                    
+                    // Przesuwamy ja troche, zeby nie stala w srodku bazy
+                    Node3D* wieza_3d = Object::cast_to<Node3D>(nowa_wieza);
+                    if (wieza_3d != nullptr) {
+                        static float przesuniecie_x = 3.0;
+                        wieza_3d->set_position(Vector3(przesuniecie_x, 0, 0));
+                        przesuniecie_x += 3.0; // Kazda kolejna wieza bedzie stala dalej
+                    }
+                    UtilityFunctions::print("Nowa wieza postawiona!");
+                }
+            }
+        }
+        buy_button_was_pressed = is_pressed;
+    }
+
 }

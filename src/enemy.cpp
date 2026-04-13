@@ -4,6 +4,7 @@
 #include <godot_cpp/classes/path_follow3d.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/label.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
 
 using namespace godot;
 
@@ -37,7 +38,14 @@ void Enemy::_process(double delta) {
             if (hp_label != nullptr) {
                 // pobieramy aktualny tekst, zamieniamy na liczbę, odejmujemy 1 i zapisujemy z powrotem
                 int aktualne_hp = hp_label->get_text().to_int();
-                hp_label->set_text(String::num_int64(aktualne_hp - 10)); // baza traci np. 10 HP
+                int nowe_hp = aktualne_hp - 10;
+                hp_label->set_text(String::num_int64(nowe_hp)); 
+
+                if (nowe_hp <= 0) {
+                    UtilityFunctions::print("Baza zniszczona! Restart poziomu...");
+                    get_tree()->reload_current_scene(); 
+                    return; 
+                }
             }
 
             UtilityFunctions::print("Wrog uderzyl w baze!");
