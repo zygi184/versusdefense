@@ -15,6 +15,7 @@ private:
     double spawn_delay;
     Ref<PackedScene> tower_scene;
     bool buy_button_was_pressed;
+    int zbudowane_wieze;
     Ref<PackedScene> enemy_scene;
     
     // obsluga fal

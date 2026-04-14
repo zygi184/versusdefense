@@ -20,10 +20,10 @@ albedo_color = Color(0.36677846, 0.2192182, 0.073022164, 1)
 
 [sub_resource type="Curve3D" id="Curve3D_gbp42"]
 _data = {
-"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -9.542913, 0, 0.42563367, 0, 0, 0, 0, 0, 0, -1.0401621, 0, 0.7825395, 0, 0, 0, 0, 0, 0, -1.1303418, 0, -8.797272),
-"tilts": PackedFloat32Array(0, 0, 0)
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -9.542913, 0, 0.14523864, 0, 0, 0, 0, 0, 0, -1.2169352, 0, -0.08709139, 0, 0, 0, 0, 0, 0, -1.1112013, 0, -8.863091, 0, 0, 0, 0, 0, 0, 5.814437, 0, -9.074562, 0, 0, 0, 0, 0, 0, 5.814437, 0, 4.72385, 0, 0, 0, 0, 0, 0, -8.829852, 0, 4.9353185, 0, 0, 0, 0, 0, 0, -8.88272, 0, 9.111849, 0, 0, 0, 0, 0, 0, 13.744559, 0, 8.900378),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
 }
-point_count = 3
+point_count = 8
 
 [sub_resource type="FontFile" id="FontFile_gbp42"]
 cache/0/variation_coordinates = {}
@@ -68,12 +68,36 @@ size = Vector3(24, 0.1, 20)
 material = SubResource("StandardMaterial3D_gbp42")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D" unique_id=1846225826]
-transform = Transform3D(-4.3711307e-08, 0, 0.99999815, 0, 1, 0, -0.99999815, 0, -4.3711307e-08, 0, 0, 0)
-size = Vector3(2, 0.2, 23.990723)
+transform = Transform3D(-4.377216e-08, 0, 0.99999815, 0, 1, 0, -0.99999815, 0, -4.377216e-08, -7.3, 0, 0)
+size = Vector3(2, 0.2, 9.334595)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="." unique_id=1726445977]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1588162, 0, 0)
-size = Vector3(2, 0.2, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -4.5)
+size = Vector3(2, 0.2, 11)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="." unique_id=530098292]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.991435, 0, -4.493393)
+size = Vector3(2, 0.2, 11.031464)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="." unique_id=1629230565]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.055313, 0, 7)
+size = Vector3(2, 0.2, 3.4067626)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="." unique_id=1919184603]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -2.5)
+size = Vector3(2, 0.2, 14.751953)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="." unique_id=1231950159]
+transform = Transform3D(-4.371139e-08, 0, 1.0000001, 0, 1.0000001, 0, -1, 0, -4.3711392e-08, 3, 0, -9)
+size = Vector3(2, 0.2, 7.3)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="." unique_id=1364833551]
+transform = Transform3D(-4.3711307e-08, 0, 0.99999815, 0, 1, 0, -0.99999815, 0, -4.3711307e-08, -1.5262427, 0, 5)
+size = Vector3(2, 0.2, 17)
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="." unique_id=2034302396]
+transform = Transform3D(-4.3711307e-08, 0, 0.99999815, 0, 1, 0, -0.99999815, 0, -4.3711307e-08, 1.9808778, 0.005, 9)
+size = Vector3(2, 0.2, 23.969637)
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=25505254]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 10, 0)
@@ -111,9 +135,9 @@ metadata/_edit_use_anchors_ = true
 [node name="Button" type="Button" parent="CanvasLayer" unique_id=2022341611]
 material = SubResource("CanvasItemMaterial_gbp42")
 offset_left = 901.0
-offset_top = 575.0
+offset_top = 419.0
 offset_right = 1121.0
-offset_bottom = 617.0
+offset_bottom = 461.0
 theme = SubResource("Theme_vnkf6")
 theme_override_colors/font_color = Color(0, 1, 0.79999995, 1)
 theme_override_font_sizes/font_size = 20
@@ -121,16 +145,42 @@ text = "Ulepsz wieże (50złota)"
 
 [node name="BuyTowerButton" type="Button" parent="CanvasLayer" unique_id=2001138057]
 material = SubResource("CanvasItemMaterial_gbp42")
-offset_left = 899.0
-offset_top = 519.0
-offset_right = 1119.0
-offset_bottom = 561.0
+offset_left = 901.0
+offset_top = 371.0
+offset_right = 1121.0
+offset_bottom = 413.0
 theme = SubResource("Theme_vnkf6")
 theme_override_colors/font_color = Color(0, 1, 0.79999995, 1)
 theme_override_font_sizes/font_size = 20
 text = "Kup wieże (200złota)"
 
 [node name="Tower" parent="." unique_id=1521220261 instance=ExtResource("1_vnkf6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.497118, 0.51592636, 1.5259404)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.7433434, 0.51592636, 1.5259404)
 
 [node name="Spawner" type="Spawner" parent="." unique_id=1493837142]
+
+[node name="MiejscaNaWieze" type="Node3D" parent="." unique_id=1530611095]
+
+[node name="Marker3D" type="Marker3D" parent="MiejscaNaWieze" unique_id=1408878329]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.9807425, 2.2791402, 3.1721601)
+gizmo_extents = 0.5
+
+[node name="Marker3D6" type="Marker3D" parent="MiejscaNaWieze" unique_id=563014888]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6353807, 2.2791402, -1.4682741)
+gizmo_extents = 0.5
+
+[node name="Marker3D5" type="Marker3D" parent="MiejscaNaWieze" unique_id=54077474]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.7651997, 2.2791402, 6.7410583)
+gizmo_extents = 0.5
+
+[node name="Marker3D4" type="Marker3D" parent="MiejscaNaWieze" unique_id=1647425878]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.9807425, 2.2791402, -6.183055)
+gizmo_extents = 0.5
+
+[node name="Marker3D3" type="Marker3D" parent="MiejscaNaWieze" unique_id=1848926874]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.377029, 2.2791402, 6.8391294)
+gizmo_extents = 0.5
+
+[node name="Marker3D2" type="Marker3D" parent="MiejscaNaWieze" unique_id=1295862845]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49964476, 2.2791402, -6.0653696)
+gizmo_extents = 0.5

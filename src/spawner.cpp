@@ -24,8 +24,9 @@ Spawner::Spawner() {
     ResourceLoader *re_loader = ResourceLoader::get_singleton();
 
     buy_button_was_pressed = false;
+    zbudowane_wieze = 0;
+
     tower_scene = re_loader->load("res://Tower.tscn");
-    
     enemy_scene = re_loader->load("res://WagonikZWrogiem.tscn");
 }
 
@@ -63,7 +64,7 @@ void Spawner::_process(double delta) {
                     // zaczynaja z 100 HP, a kazda kolejna fala daje +50 HP
                     Enemy* kod_wroga = Object::cast_to<Enemy>(nowy_wrog->get_node_or_null("Enemy"));
                     if (kod_wroga != nullptr) {
-                        kod_wroga->set_max_hp(50 + (obecna_fala * 50)); 
+                        kod_wroga->set_max_hp(100 + (obecna_fala * 50)); 
                     }
 
                     wyprodukowani_wrogowie++;
@@ -89,26 +90,44 @@ void Spawner::_process(double delta) {
         
         if (is_pressed && !buy_button_was_pressed) {
             Label* gold_label = Object::cast_to<Label>(get_node_or_null("/root/Poziom/CanvasLayer/GoldLabel"));
-            if (gold_label != nullptr && tower_scene.is_valid()) {
+            
+            // Szukamy znaczników na mapie
+            Node* miejsca_na_wieze = get_node_or_null("../MiejscaNaWieze"); 
+
+            if (gold_label != nullptr && tower_scene.is_valid() && miejsca_na_wieze != nullptr) {
                 int aktualne_zloto = gold_label->get_text().to_int();
                 int koszt_wiezy = 200;
+                int dostepne_miejsca = miejsca_na_wieze->get_child_count();
 
                 if (aktualne_zloto >= koszt_wiezy) {
-                    // Zabieramy zloto
-                    gold_label->set_text(String::num_int64(aktualne_zloto - koszt_wiezy));
-                    
-                    // Klonujemy nowa wieze
-                    Node* nowa_wieza = tower_scene->instantiate();
-                    get_parent()->add_child(nowa_wieza);
-                    
-                    // Przesuwamy ja troche, zeby nie stala w srodku bazy
-                    Node3D* wieza_3d = Object::cast_to<Node3D>(nowa_wieza);
-                    if (wieza_3d != nullptr) {
-                        static float przesuniecie_x = 3.0;
-                        wieza_3d->set_position(Vector3(przesuniecie_x, 0, 0));
-                        przesuniecie_x += 3.0; // Kazda kolejna wieza bedzie stala dalej
+                    // Sprawdzamy czy mamy jeszcze wolne sloty na mapie
+                    if (zbudowane_wieze < dostepne_miejsca) {
+                        
+                        // Pobieramy konkretny znacznik (Marker3D) z listy wg numeru
+                        Node3D* znacznik = Object::cast_to<Node3D>(miejsca_na_wieze->get_child(zbudowane_wieze));
+
+                        if (znacznik != nullptr) {
+                            // Zabieramy zloto
+                            gold_label->set_text(String::num_int64(aktualne_zloto - koszt_wiezy));
+                            
+                            // Klonujemy nowa wieze
+                            Node* nowa_wieza = tower_scene->instantiate();
+                            get_parent()->add_child(nowa_wieza);
+                            
+                            // Ustawiamy wieze DOKLADNIE w globalnej pozycji znacznika
+                            Node3D* wieza_3d = Object::cast_to<Node3D>(nowa_wieza);
+                            if (wieza_3d != nullptr) {
+                                wieza_3d->set_global_position(znacznik->get_global_position());
+                            }
+
+                            zbudowane_wieze++; // Podbijamy licznik postawionych wiez
+                            UtilityFunctions::print("Nowa wieza postawiona na miejscu nr: ", zbudowane_wieze);
+                        }
+                    } else {
+                        UtilityFunctions::print("Brak wolnych miejsc na mapie!");
                     }
-                    UtilityFunctions::print("Nowa wieza postawiona!");
+                } else {
+                    UtilityFunctions::print("Za malo zlota na nowa wieze!");
                 }
             }
         }
