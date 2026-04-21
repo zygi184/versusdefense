@@ -16,6 +16,10 @@ private:
     Ref<PackedScene> tower_scene;
     bool buy_button_was_pressed;
     int zbudowane_wieze;
+    bool gra_rozpoczeta;
+    int mnoznik_trudnosci;
+    bool btn_normal_was_pressed;
+    bool btn_hard_was_pressed;
     Ref<PackedScene> enemy_scene;
     
     // obsluga fal

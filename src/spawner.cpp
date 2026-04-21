@@ -26,6 +26,11 @@ Spawner::Spawner() {
     buy_button_was_pressed = false;
     zbudowane_wieze = 0;
 
+    gra_rozpoczeta = false;
+    mnoznik_trudnosci = 1;
+    btn_normal_was_pressed = false;
+    btn_hard_was_pressed = false;
+
     tower_scene = re_loader->load("res://Tower.tscn");
     enemy_scene = re_loader->load("res://WagonikZWrogiem.tscn");
 }
@@ -35,6 +40,38 @@ Spawner::~Spawner() {}
 void Spawner::_process(double delta) {
     if (Engine::get_singleton()->is_editor_hint()) {
         return;
+    }
+
+    if (!gra_rozpoczeta) {
+        Control* lobby_panel = Object::cast_to<Control>(get_node_or_null("/root/Poziom/CanvasLayer/LobbyPanel"));
+        Button* btn_normal = Object::cast_to<Button>(get_node_or_null("/root/Poziom/CanvasLayer/LobbyPanel/BtnNormal"));
+        Button* btn_hard = Object::cast_to<Button>(get_node_or_null("/root/Poziom/CanvasLayer/LobbyPanel/BtnHard"));
+
+        if (lobby_panel != nullptr && btn_normal != nullptr && btn_hard != nullptr) {
+            bool is_normal_pressed = btn_normal->is_pressed();
+            bool is_hard_pressed = btn_hard->is_pressed();
+
+            // normalny
+            if (is_normal_pressed && !btn_normal_was_pressed) {
+                mnoznik_trudnosci = 1;
+                gra_rozpoczeta = true;
+                lobby_panel->hide(); 
+                UtilityFunctions::print("Start gry: Poziom Normalny");
+            }
+
+            // trudny
+            if (is_hard_pressed && !btn_hard_was_pressed) {
+                mnoznik_trudnosci = 2; // Wrogowie beda mieli 2x wiecej HP!
+                gra_rozpoczeta = true;
+                lobby_panel->hide(); 
+                UtilityFunctions::print("Start gry: Poziom Trudny");
+            }
+
+            btn_normal_was_pressed = is_normal_pressed;
+            btn_hard_was_pressed = is_hard_pressed;
+        }
+        
+        return; 
     }
 
     timer += delta;
@@ -64,7 +101,7 @@ void Spawner::_process(double delta) {
                     // zaczynaja z 100 HP, a kazda kolejna fala daje +50 HP
                     Enemy* kod_wroga = Object::cast_to<Enemy>(nowy_wrog->get_node_or_null("Enemy"));
                     if (kod_wroga != nullptr) {
-                        kod_wroga->set_max_hp(100 + (obecna_fala * 50)); 
+                        kod_wroga->set_max_hp((100 + (obecna_fala * 100)) * mnoznik_trudnosci); 
                     }
 
                     wyprodukowani_wrogowie++;

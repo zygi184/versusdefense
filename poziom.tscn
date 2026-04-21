@@ -53,6 +53,24 @@ base_font = SubResource("FontFile_gbp42")
 
 [sub_resource type="Theme" id="Theme_vnkf6"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vnkf6"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wd15o"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3fwk8"]
+bg_color = Color(0.7, 0.7, 0.7, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5tgxs"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vppxe"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1p6ht"]
+bg_color = Color(0.7, 0.7, 0.7, 1)
+
 [node name="Poziom" type="Node3D" unique_id=1269617818]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1730273409]
@@ -153,6 +171,40 @@ theme = SubResource("Theme_vnkf6")
 theme_override_colors/font_color = Color(0, 1, 0.79999995, 1)
 theme_override_font_sizes/font_size = 20
 text = "Kup wieże (200złota)"
+
+[node name="LobbyPanel" type="ColorRect" parent="CanvasLayer" unique_id=34611822]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.79607844)
+
+[node name="BtnHard" type="Button" parent="CanvasLayer/LobbyPanel" unique_id=1975175198]
+layout_mode = 0
+offset_left = 455.0
+offset_top = 327.0
+offset_right = 714.0
+offset_bottom = 426.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_vnkf6")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_wd15o")
+theme_override_styles/hover = SubResource("StyleBoxFlat_3fwk8")
+text = "Start - trudny"
+
+[node name="BtnNormal" type="Button" parent="CanvasLayer/LobbyPanel" unique_id=1196266752]
+layout_mode = 0
+offset_left = 425.0
+offset_top = 202.0
+offset_right = 747.0
+offset_bottom = 301.0
+theme_override_colors/font_color = Color(0.20249993, 1, 0.13, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_5tgxs")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_vppxe")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1p6ht")
+text = "Start - normalny"
 
 [node name="Tower" parent="." unique_id=1521220261 instance=ExtResource("1_vnkf6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.7433434, 0.51592636, 1.5259404)
