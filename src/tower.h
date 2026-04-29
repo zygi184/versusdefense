@@ -14,6 +14,7 @@ private:
     double fire_rate; // szybkostrzelnosc (czas miedzy strzalami)
     double time_since_last_shot; // stoper odmierzajacy czas
     bool button_was_pressed;
+    double laser_timer;
 
 protected:
     static void _bind_methods();

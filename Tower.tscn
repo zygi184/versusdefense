@@ -6,6 +6,18 @@ albedo_color = Color(0.5464335, 0.45672268, 0.07342187, 1)
 [sub_resource type="SphereShape3D" id="SphereShape3D_3fwk8"]
 radius = 3.0
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jlq62"]
+albedo_color = Color(0, 0, 0.8862745, 1)
+emission_enabled = true
+emission = Color(0, 0, 0.8862745, 1)
+emission_energy_multiplier = 15.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_arn3v"]
+material = SubResource("StandardMaterial3D_jlq62")
+top_radius = 0.1
+bottom_radius = 0.1
+height = 1.0
+
 [node name="Tower" type="Tower" unique_id=1521220261]
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="." unique_id=993744341]
@@ -15,3 +27,7 @@ material = SubResource("StandardMaterial3D_wd15o")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Zasieg" unique_id=1942397051]
 shape = SubResource("SphereShape3D_3fwk8")
+
+[node name="Laser" type="MeshInstance3D" parent="." unique_id=667790948]
+visible = false
+mesh = SubResource("CylinderMesh_arn3v")

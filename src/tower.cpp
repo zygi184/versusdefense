@@ -17,6 +17,7 @@ Tower::Tower() {
     fire_rate = 0.5; 
     time_since_last_shot = 0.0;
     button_was_pressed = false; 
+    laser_timer = 0.0;
 }
 
 Tower::~Tower() {}
@@ -64,6 +65,16 @@ void Tower::_process(double delta) {
     // zwiekszamy stoper o czas, ktory minal od ostatniej klatki
     time_since_last_shot += delta;
 
+    if (laser_timer > 0.0) {
+        laser_timer -= delta;
+        if (laser_timer <= 0.0) {
+            Node3D* laser = Object::cast_to<Node3D>(get_node_or_null("Laser"));
+            if (laser != nullptr) {
+                laser->hide(); 
+            }
+        }
+    }
+
     // wieza w ogole probuje szukac celu TYLKO, jesli minela juz sekunda od ostatniego strzalu
     if (time_since_last_shot >= fire_rate) {
         
@@ -82,9 +93,39 @@ void Tower::_process(double delta) {
 
                     if (wrog != nullptr) {
                         wrog->take_damage((int)damage); 
-                        
-                        // po udanym strzale zerujemy stoper, wieza znowu musi czekac sekunde
                         time_since_last_shot = 0.0; 
+                        
+                        Node3D* laser = Object::cast_to<Node3D>(get_node_or_null("Laser"));
+                        Node3D* cel_3d = Object::cast_to<Node3D>(cel);
+                        
+                        if (laser != nullptr && cel_3d != nullptr) {
+                            Vector3 pozycja_wiezy = get_global_position();
+                            
+                            // punkt startowy o 1 metr do gory, zeby strzelalo z lufy, a nie z ziemi
+                            pozycja_wiezy.y += 1.0; 
+                            
+                            Vector3 pozycja_wroga = cel_3d->get_global_position();
+                            
+                            // odleglosc
+                            double dystans = pozycja_wiezy.distance_to(pozycja_wroga);
+                            
+                            // laser dokladnie w polowie drogi miedzy wieza a wrogiem
+                            laser->set_global_position(pozycja_wiezy.lerp(pozycja_wroga, 0.5));
+                            
+                            // rozciagamy laser (os Y) na dlugosc calej odleglosci
+                            laser->set_scale(Vector3(1.0, dystans, 1.0));
+                            
+                            // obracamy laser, zeby wylot lufy patrzyl na wroga
+                            laser->look_at(pozycja_wroga, Vector3(0, 1, 0));
+                            
+                            // Godot rysuje cylinder w pionie, a my celujemy przodem (os Z),
+                            // musimy go "polozyc" o 90 stopni (1.5708 radianow)
+                            laser->rotate_object_local(Vector3(1, 0, 0), 1.5708);
+                            
+                            // pokazujemy go graczowi i nastawiamy stoper na 0.1 sekundy
+                            laser->show();
+                            laser_timer = 0.1;
+                        }
                     }
                     
                     break; 

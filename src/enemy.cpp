@@ -32,22 +32,19 @@ void Enemy::_process(double delta) {
         wagonik->set_progress(aktualna_pozycja + speed * delta);
 
         if (wagonik->get_progress_ratio() >= 1.0) {
-            // szukamy etykiety HP w scenie)
             Label* hp_label = Object::cast_to<Label>(get_node_or_null("/root/Poziom/CanvasLayer/BaseHPLabel"));
             
             if (hp_label != nullptr) {
-                // pobieramy aktualny tekst, zamieniamy na liczbę, odejmujemy 1 i zapisujemy z powrotem
                 int aktualne_hp = hp_label->get_text().to_int();
                 int nowe_hp = aktualne_hp - 10;
-                hp_label->set_text(String::num_int64(nowe_hp)); 
-
+                
+                // Blokujemy HP, zeby nie spadlo ponizej zera
                 if (nowe_hp <= 0) {
-                    UtilityFunctions::print("Baza zniszczona! Restart poziomu...");
-                    get_tree()->reload_current_scene(); 
-                    return; 
+                    hp_label->set_text("0");
+                } else {
+                    hp_label->set_text(String::num_int64(nowe_hp)); 
                 }
             }
-
             UtilityFunctions::print("Wrog uderzyl w baze!");
             queue_free(); 
         }

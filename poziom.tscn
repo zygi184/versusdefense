@@ -25,29 +25,15 @@ _data = {
 }
 point_count = 8
 
-[sub_resource type="FontFile" id="FontFile_gbp42"]
-cache/0/variation_coordinates = {}
-cache/0/face_index = 0
-cache/0/embolden = 0.0
-cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
-cache/0/spacing_top = 0
-cache/0/spacing_bottom = 0
-cache/0/spacing_space = 0
-cache/0/spacing_glyph = 0
-cache/0/baseline_offset = 0.0
-cache/0/16/0/ascent = 0.0
-cache/0/16/0/descent = 0.0
-cache/0/16/0/underline_position = 0.0
-cache/0/16/0/underline_thickness = 0.0
-cache/0/16/0/scale = 1.0
-cache/0/30/0/ascent = 0.0
-cache/0/30/0/descent = 0.0
-cache/0/30/0/underline_position = 0.0
-cache/0/30/0/underline_thickness = 0.0
-cache/0/30/0/scale = 1.0
+[sub_resource type="FontVariation" id="FontVariation_wd15o"]
+
+[sub_resource type="FontVariation" id="FontVariation_3fwk8"]
+base_font = SubResource("FontVariation_wd15o")
+spacing_glyph = -3
+spacing_space = 2
 
 [sub_resource type="FontVariation" id="FontVariation_vnkf6"]
-base_font = SubResource("FontFile_gbp42")
+base_font = SubResource("FontVariation_3fwk8")
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gbp42"]
 
@@ -69,6 +55,18 @@ bg_color = Color(1, 1, 1, 1)
 bg_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1p6ht"]
+bg_color = Color(0.7, 0.7, 0.7, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ypajl"]
+bg_color = Color(0.39, 0.234, 0.234, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gllh2"]
+bg_color = Color(0.3882353, 0.23529412, 0.23529412, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5jjkf"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w7bxw"]
 bg_color = Color(0.7, 0.7, 0.7, 1)
 
 [node name="Poziom" type="Node3D" unique_id=1269617818]
@@ -205,6 +203,47 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_5tgxs")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vppxe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_1p6ht")
 text = "Start - normalny"
+
+[node name="GameOverPanel" type="ColorRect" parent="CanvasLayer" unique_id=1282861514]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.62, 0.1488, 0.1488, 0.7411765)
+metadata/_edit_use_anchors_ = true
+
+[node name="EndLabel" type="Label" parent="CanvasLayer/GameOverPanel" unique_id=1319043898]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.22395833
+anchor_top = 0.06944445
+anchor_right = 0.7161458
+anchor_bottom = 0.18981482
+offset_right = 102.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0.0046, 0.02, 0.006653335, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.41568628)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = SubResource("FontVariation_vnkf6")
+theme_override_font_sizes/font_size = 110
+theme_override_styles/normal = SubResource("StyleBoxFlat_ypajl")
+text = "PRZEGRAŁEŚ!"
+metadata/_edit_use_anchors_ = true
+
+[node name="BtnRestart" type="Button" parent="CanvasLayer/GameOverPanel" unique_id=902925430]
+layout_mode = 0
+offset_left = 391.0
+offset_top = 262.0
+offset_right = 796.0
+offset_bottom = 406.0
+theme_override_colors/font_color = Color(0.06999999, 0.13199991, 1, 1)
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxFlat_gllh2")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_5jjkf")
+theme_override_styles/hover = SubResource("StyleBoxFlat_w7bxw")
+text = "Zagraj ponownie"
 
 [node name="Tower" parent="." unique_id=1521220261 instance=ExtResource("1_vnkf6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.7433434, 0.51592636, 1.5259404)

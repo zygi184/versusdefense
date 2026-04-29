@@ -6,6 +6,7 @@
 #include "enemy.h" 
 #include <godot_cpp/classes/button.hpp>
 #include <godot_cpp/classes/label.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
 
 using namespace godot;
 
@@ -42,6 +43,22 @@ void Spawner::_process(double delta) {
         return;
     }
 
+    Label* hp_label = Object::cast_to<Label>(get_node_or_null("/root/Poziom/CanvasLayer/BaseHPLabel"));
+    if (hp_label != nullptr && hp_label->get_text().to_int() <= 0) {
+        
+        Control* game_over_panel = Object::cast_to<Control>(get_node_or_null("/root/Poziom/CanvasLayer/GameOverPanel"));
+        if (game_over_panel != nullptr) {
+            game_over_panel->show(); 
+
+            Button* btn_restart = Object::cast_to<Button>(game_over_panel->get_node_or_null("BtnRestart"));
+            if (btn_restart != nullptr && btn_restart->is_pressed()) {
+                get_tree()->reload_current_scene(); 
+            }
+        }
+        
+        return; 
+    }
+
     if (!gra_rozpoczeta) {
         Control* lobby_panel = Object::cast_to<Control>(get_node_or_null("/root/Poziom/CanvasLayer/LobbyPanel"));
         Button* btn_normal = Object::cast_to<Button>(get_node_or_null("/root/Poziom/CanvasLayer/LobbyPanel/BtnNormal"));
@@ -51,7 +68,6 @@ void Spawner::_process(double delta) {
             bool is_normal_pressed = btn_normal->is_pressed();
             bool is_hard_pressed = btn_hard->is_pressed();
 
-            // normalny
             if (is_normal_pressed && !btn_normal_was_pressed) {
                 mnoznik_trudnosci = 1;
                 gra_rozpoczeta = true;
@@ -59,9 +75,8 @@ void Spawner::_process(double delta) {
                 UtilityFunctions::print("Start gry: Poziom Normalny");
             }
 
-            // trudny
             if (is_hard_pressed && !btn_hard_was_pressed) {
-                mnoznik_trudnosci = 2; // Wrogowie beda mieli 2x wiecej HP!
+                mnoznik_trudnosci = 2; 
                 gra_rozpoczeta = true;
                 lobby_panel->hide(); 
                 UtilityFunctions::print("Start gry: Poziom Trudny");
@@ -76,7 +91,6 @@ void Spawner::_process(double delta) {
 
     timer += delta;
 
-    // sprawdzamy, czy gra czeka na rozpoczecie nowej fali
     if (przerwa_miedzy_falami) {
         if (timer >= czas_do_kolejnej_fali) {
             przerwa_miedzy_falami = false;
@@ -85,7 +99,6 @@ void Spawner::_process(double delta) {
             UtilityFunctions::print("Rozpoczyna sie fala: ", obecna_fala);
         }
     } 
-    // jesli fala trwa, produkujemy wrogow
     else {
         if (timer >= spawn_delay) {
             timer = 0.0;
@@ -97,8 +110,6 @@ void Spawner::_process(double delta) {
                 if (path_node != nullptr) {
                     path_node->add_child(nowy_wrog);
                     
-                    // dobieramy sie do wroga i zwiekszamy mu HP w zaleznosci od fali
-                    // zaczynaja z 100 HP, a kazda kolejna fala daje +50 HP
                     Enemy* kod_wroga = Object::cast_to<Enemy>(nowy_wrog->get_node_or_null("Enemy"));
                     if (kod_wroga != nullptr) {
                         kod_wroga->set_max_hp((100 + (obecna_fala * 100)) * mnoznik_trudnosci); 
@@ -108,11 +119,10 @@ void Spawner::_process(double delta) {
                 }
             }
 
-            // jesli wyprodukowalismy wszystkich wrogow na te fale, oglaszamy przerwe
             if (wyprodukowani_wrogowie >= wrogowie_w_fali) {
                 przerwa_miedzy_falami = true;
                 obecna_fala++;
-                wrogowie_w_fali += 2; // kazda kolejna fala ma o 2 wrogow wiecej
+                wrogowie_w_fali += 2; 
                 timer = 0.0;
                 UtilityFunctions::print("Fala pokonana! Nastepna za 5 sekund.");
             }
