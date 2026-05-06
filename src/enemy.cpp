@@ -72,3 +72,7 @@ void Enemy::take_damage(int amount) {
 void Enemy::set_max_hp(int new_hp) {
     hp = new_hp;
 }
+
+void Enemy::set_speed(double new_speed) {
+    speed = new_speed;
+}

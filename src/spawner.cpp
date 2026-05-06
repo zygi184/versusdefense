@@ -113,6 +113,16 @@ void Spawner::_process(double delta) {
                     Enemy* kod_wroga = Object::cast_to<Enemy>(nowy_wrog->get_node_or_null("Enemy"));
                     if (kod_wroga != nullptr) {
                         kod_wroga->set_max_hp((100 + (obecna_fala * 100)) * mnoznik_trudnosci); 
+                
+                        double poczatkowa_predkosc = 2.0; // Standardowa predkosc
+                        
+                        if (obecna_fala >= 10) {
+                            double dopalacz = (obecna_fala - 9) * 0.2; 
+                            poczatkowa_predkosc += dopalacz;
+                            UtilityFunctions::print("Uwaga! Wrogowie sa szybsi! Predkosc: ", poczatkowa_predkosc);
+                        }
+                        
+                        kod_wroga->set_speed(poczatkowa_predkosc);
                     }
 
                     wyprodukowani_wrogowie++;

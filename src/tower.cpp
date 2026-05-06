@@ -9,6 +9,8 @@
 
 using namespace godot;
 
+int Tower::global_upgrade_cost = 50;
+
 void Tower::_bind_methods() {}
 
 Tower::Tower() {
@@ -27,19 +29,23 @@ void Tower::upgrade_tower() {
     
     if (gold_label != nullptr) {
         int aktualne_zloto = gold_label->get_text().to_int();
-        int koszt_ulepszenia = 50;
 
-        if (aktualne_zloto >= koszt_ulepszenia) {
-            // zabieramy kase
-            gold_label->set_text(String::num_int64(aktualne_zloto - koszt_ulepszenia));
+        if (aktualne_zloto >= global_upgrade_cost) {
             
-            // zwiekszamy statystyki (np. szybkosc strzalu o 10 procent i 25 damage)
-            fire_rate *= 0.9; 
-            damage += 25.0;
+            gold_label->set_text(String::num_int64(aktualne_zloto - global_upgrade_cost));
+
+            fire_rate *= 0.95; 
+            damage += 15.0;    
             
-            UtilityFunctions::print("Wieza ulepszona! Nowy damage: ", damage);
-        } else {
-            UtilityFunctions::print("Za malo zlota na ulepszenie!");
+            global_upgrade_cost += 30; 
+            
+            Button* btn = Object::cast_to<Button>(get_node_or_null("/root/Poziom/CanvasLayer/Button"));
+            if (btn != nullptr) {
+                String nowy_tekst = "Ulepsz wieze (" + String::num_int64(global_upgrade_cost) + "złota)";
+                btn->set_text(nowy_tekst);
+            }
+
+            UtilityFunctions::print("Wieze ulepszone! Nast. globalny koszt: ", global_upgrade_cost);
         }
     }
 }

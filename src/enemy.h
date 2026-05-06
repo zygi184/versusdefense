@@ -22,6 +22,7 @@ public:
     void _process(double delta) override;
     void take_damage(int amount);
     void set_max_hp(int new_hp);
+    void set_speed(double new_speed);
 };
 
 }

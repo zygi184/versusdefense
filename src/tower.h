@@ -15,6 +15,7 @@ private:
     double time_since_last_shot; // stoper odmierzajacy czas
     bool button_was_pressed;
     double laser_timer;
+    static int global_upgrade_cost;
 
 protected:
     static void _bind_methods();
