@@ -7,12 +7,23 @@
 #include <godot_cpp/classes/button.hpp>
 #include <godot_cpp/classes/label.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
+//zestaw bibliotek do obslugi klikniec myszka i raycasta
+#include <godot_cpp/classes/input.hpp>
+#include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/camera3d.hpp>
+#include <godot_cpp/classes/world3d.hpp>
+#include <godot_cpp/classes/physics_direct_space_state3d.hpp>
+#include <godot_cpp/classes/physics_ray_query_parameters3d.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
+
 
 using namespace godot;
 
 void Spawner::_bind_methods() {}
 
 Spawner::Spawner() {
+    is_building_mode = false;
+    mouse_was_clicking = false;
     timer = 0.0;
     spawn_delay = 1.0; // wrogowie wychodza co 1 sekunde w trakcie fali
     
@@ -139,56 +150,98 @@ void Spawner::_process(double delta) {
         }
     }
 
-    // RĘCZNA OBSŁUGA KUPUWANIA WIEŻY
+    // nowa obsluga stawiania wiez (RAYCASTING)
     Button* buy_btn = Object::cast_to<Button>(get_node_or_null("/root/Poziom/CanvasLayer/BuyTowerButton"));
     
+    // sprawdzamy przycisk w GUI
     if (buy_btn != nullptr) {
         bool is_pressed = buy_btn->is_pressed();
         
         if (is_pressed && !buy_button_was_pressed) {
-            Label* gold_label = Object::cast_to<Label>(get_node_or_null("/root/Poziom/CanvasLayer/GoldLabel"));
-            
-            // Szukamy znaczników na mapie
-            Node* miejsca_na_wieze = get_node_or_null("../MiejscaNaWieze"); 
-
-            if (gold_label != nullptr && tower_scene.is_valid() && miejsca_na_wieze != nullptr) {
-                int aktualne_zloto = gold_label->get_text().to_int();
-                int koszt_wiezy = 200;
-                int dostepne_miejsca = miejsca_na_wieze->get_child_count();
-
-                if (aktualne_zloto >= koszt_wiezy) {
-                    // Sprawdzamy czy mamy jeszcze wolne sloty na mapie
-                    if (zbudowane_wieze < dostepne_miejsca) {
-                        
-                        // Pobieramy konkretny znacznik (Marker3D) z listy wg numeru
-                        Node3D* znacznik = Object::cast_to<Node3D>(miejsca_na_wieze->get_child(zbudowane_wieze));
-
-                        if (znacznik != nullptr) {
-                            // Zabieramy zloto
-                            gold_label->set_text(String::num_int64(aktualne_zloto - koszt_wiezy));
-                            
-                            // Klonujemy nowa wieze
-                            Node* nowa_wieza = tower_scene->instantiate();
-                            get_parent()->add_child(nowa_wieza);
-                            
-                            // Ustawiamy wieze DOKLADNIE w globalnej pozycji znacznika
-                            Node3D* wieza_3d = Object::cast_to<Node3D>(nowa_wieza);
-                            if (wieza_3d != nullptr) {
-                                wieza_3d->set_global_position(znacznik->get_global_position());
-                            }
-
-                            zbudowane_wieze++; // Podbijamy licznik postawionych wiez
-                            UtilityFunctions::print("Nowa wieza postawiona na miejscu nr: ", zbudowane_wieze);
-                        }
-                    } else {
-                        UtilityFunctions::print("Brak wolnych miejsc na mapie!");
-                    }
-                } else {
-                    UtilityFunctions::print("Za malo zlota na nowa wieze!");
-                }
+            // wlaczamy lub wylaczamy tryb budowania (jak gracz kliknie znowu, to anuluje)
+            is_building_mode = !is_building_mode; 
+            if (is_building_mode) {
+                UtilityFunctions::print("Tryb budowania WLACZONY! Kliknij na mape, by postawic wieze.");
+            } else {
+                UtilityFunctions::print("Tryb budowania WYLACZONY.");
             }
         }
         buy_button_was_pressed = is_pressed;
+    }
+
+    // jesli jestesmy w trybie budowania, czekamy na klikniecie na mapie
+    if (is_building_mode) {
+        Input* input = Input::get_singleton();
+        bool is_clicking = input->is_mouse_button_pressed((MouseButton)1); // lewy przycisk
+
+        if (is_clicking && !mouse_was_clicking) {
+            
+            Viewport* vp = get_viewport();
+            Camera3D* camera = vp->get_camera_3d();
+            
+            if (camera != nullptr) {
+                // konwersja klikniecia 2D na promien w swiecie 3D
+                Vector2 mouse_pos = vp->get_mouse_position();
+                Vector3 from = camera->project_ray_origin(mouse_pos);
+                Vector3 to = from + camera->project_ray_normal(mouse_pos) * 1000.0; // promien o dlugosci 1000 metrow
+                
+                PhysicsDirectSpaceState3D* space_state = get_world_3d()->get_direct_space_state();
+                Ref<PhysicsRayQueryParameters3D> query = PhysicsRayQueryParameters3D::create(from, to);
+                
+                // puszczamy promien i sprawdzamy, czy w cos uderzyl
+                Dictionary result = space_state->intersect_ray(query);
+                
+                if (!result.is_empty()) {
+                    
+                    // sprawdzamy w co klinelismy 
+                    Node* uderzony_obiekt = Object::cast_to<Node>(result["collider"]);
+                    
+                    // jesli obiekt istnieje i nalezy do grupy "ziemia"
+                    if (uderzony_obiekt != nullptr && uderzony_obiekt->is_in_group("ziemia")) {
+                        
+                        // mamy punkt uderzenia w dobre miejsce
+                        Vector3 pozycja_na_mapie = result["position"];
+                        
+                        // sprawdzamy kase
+                        Label* gold_label = Object::cast_to<Label>(get_node_or_null("/root/Poziom/CanvasLayer/GoldLabel"));
+                        if (gold_label != nullptr && tower_scene.is_valid()) {
+                            int aktualne_zloto = gold_label->get_text().to_int();
+                            int koszt_wiezy = 200;
+                            
+                            if (aktualne_zloto >= koszt_wiezy) {
+                                // zabieramy zloto
+                                gold_label->set_text(String::num_int64(aktualne_zloto - koszt_wiezy));
+                                
+                                // tworzymy i stawiamy wieze
+                                Node* nowa_wieza = tower_scene->instantiate();
+                                get_parent()->add_child(nowa_wieza);
+                                
+                                Node3D* wieza_3d = Object::cast_to<Node3D>(nowa_wieza);
+                                if (wieza_3d != nullptr) {
+                                    wieza_3d->set_global_position(pozycja_na_mapie);
+                                }
+                                
+                                zbudowane_wieze++;
+                                UtilityFunctions::print("Wieza postawiona! Pozostalo zlota: ", aktualne_zloto - koszt_wiezy);
+                                
+                                // wylaczamy tryb budowania
+                                is_building_mode = false;
+                            } else {
+                                UtilityFunctions::print("Za malo zlota na nowa wieze!");
+                                is_building_mode = false; // anulujemy budowe, bo nie ma kasy
+                            }
+                        }
+                    } else {
+                        // jesli gracz kliknal w sciezke albo cokolwiek innego
+                        UtilityFunctions::print("W tym miejscu nie mozesz budowac!");
+                        is_building_mode = false; // anulujemy tryb budowania
+                    }
+                }
+            }
+        }
+        mouse_was_clicking = is_clicking;
+    } else {
+        mouse_was_clicking = false; // resetujemy myszke, gdy nie jestesmy w trybie budowania
     }
 
 }

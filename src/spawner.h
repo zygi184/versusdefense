@@ -29,6 +29,9 @@ private:
     double czas_do_kolejnej_fali;
     bool przerwa_miedzy_falami;
 
+    bool is_building_mode; 
+    bool mouse_was_clicking;
+
 protected:
     static void _bind_methods();
 

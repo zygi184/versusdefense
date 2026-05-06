@@ -18,6 +18,9 @@ glow_enabled = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gbp42"]
 albedo_color = Color(0.36677846, 0.2192182, 0.073022164, 1)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_vnkf6"]
+size = Vector3(25, 1, 21)
+
 [sub_resource type="Curve3D" id="Curve3D_gbp42"]
 _data = {
 "points": PackedVector3Array(0, 0, 0, 0, 0, 0, -9.542913, 0, 0.14523864, 0, 0, 0, 0, 0, 0, -1.2169352, 0, -0.08709139, 0, 0, 0, 0, 0, 0, -1.1112013, 0, -8.863091, 0, 0, 0, 0, 0, 0, 5.814437, 0, -9.074562, 0, 0, 0, 0, 0, 0, 5.814437, 0, 4.72385, 0, 0, 0, 0, 0, 0, -8.829852, 0, 4.9353185, 0, 0, 0, 0, 0, 0, -8.88272, 0, 9.111849, 0, 0, 0, 0, 0, 0, 13.744559, 0, 8.900378),
@@ -83,36 +86,50 @@ transform = Transform3D(0.9999847, 0, 0.0055326656, 0, 1, 0, -0.0055326656, 0, 0
 size = Vector3(24, 0.1, 20)
 material = SubResource("StandardMaterial3D_gbp42")
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D" unique_id=1846225826]
-transform = Transform3D(-4.377216e-08, 0, 0.99999815, 0, 1, 0, -0.99999815, 0, -4.377216e-08, -7.3, 0, 0)
-size = Vector3(2, 0.2, 9.334595)
+[node name="StaticBody3D" type="StaticBody3D" parent="CSGBox3D" unique_id=1636922809 groups=["ziemia"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CSGBox3D/StaticBody3D" unique_id=1204138305]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4305115e-06, 0, -2.104789e-07)
+shape = SubResource("BoxShape3D_vnkf6")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="." unique_id=1726445977]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -4.5)
+use_collision = true
 size = Vector3(2, 0.2, 11)
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="." unique_id=1846225826]
+transform = Transform3D(-0.005532699, 0, 0.99998283, 0, 1, 0, -0.99998283, 0, -0.005532699, -5.32772, 0.005667448, 0.04038846)
+use_collision = true
+size = Vector3(2, 0.2, 9.334595)
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="." unique_id=530098292]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.991435, 0, -4.493393)
+use_collision = true
 size = Vector3(2, 0.2, 11.031464)
 
 [node name="CSGBox3D7" type="CSGBox3D" parent="." unique_id=1629230565]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.055313, 0, 7)
+use_collision = true
 size = Vector3(2, 0.2, 3.4067626)
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="." unique_id=1919184603]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -2.5)
+use_collision = true
 size = Vector3(2, 0.2, 14.751953)
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="." unique_id=1231950159]
 transform = Transform3D(-4.371139e-08, 0, 1.0000001, 0, 1.0000001, 0, -1, 0, -4.3711392e-08, 3, 0, -9)
+use_collision = true
 size = Vector3(2, 0.2, 7.3)
 
 [node name="CSGBox3D6" type="CSGBox3D" parent="." unique_id=1364833551]
 transform = Transform3D(-4.3711307e-08, 0, 0.99999815, 0, 1, 0, -0.99999815, 0, -4.3711307e-08, -1.5262427, 0, 5)
+use_collision = true
 size = Vector3(2, 0.2, 17)
 
 [node name="CSGBox3D8" type="CSGBox3D" parent="." unique_id=2034302396]
 transform = Transform3D(-4.3711307e-08, 0, 0.99999815, 0, 1, 0, -0.99999815, 0, -4.3711307e-08, 1.9808778, 0.005, 9)
+use_collision = true
 size = Vector3(2, 0.2, 23.969637)
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=25505254]
@@ -150,10 +167,10 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Button" type="Button" parent="CanvasLayer" unique_id=2022341611]
 material = SubResource("CanvasItemMaterial_gbp42")
-offset_left = 901.0
-offset_top = 419.0
-offset_right = 1121.0
-offset_bottom = 461.0
+offset_left = 6.0
+offset_top = 317.0
+offset_right = 226.0
+offset_bottom = 359.0
 theme = SubResource("Theme_vnkf6")
 theme_override_colors/font_color = Color(0, 1, 0.79999995, 1)
 theme_override_font_sizes/font_size = 20
@@ -161,9 +178,9 @@ text = "Ulepsz wieże (50złota)"
 
 [node name="BuyTowerButton" type="Button" parent="CanvasLayer" unique_id=2001138057]
 material = SubResource("CanvasItemMaterial_gbp42")
-offset_left = 901.0
+offset_left = 5.0
 offset_top = 371.0
-offset_right = 1121.0
+offset_right = 225.0
 offset_bottom = 413.0
 theme = SubResource("Theme_vnkf6")
 theme_override_colors/font_color = Color(0, 1, 0.79999995, 1)
@@ -174,6 +191,10 @@ text = "Kup wieże (200złota)"
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = -3.0
+offset_right = -1.0
+offset_bottom = -3.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.79607844)
