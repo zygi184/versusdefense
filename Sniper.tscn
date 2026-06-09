@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://cq8f2q402dtls"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wd15o"]
+albedo_color = Color(0, 0, 0.050980393, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_3fwk8"]
+radius = 3.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jlq62"]
+albedo_color = Color(1, 0, 0, 1)
+emission_enabled = true
+emission = Color(0.81079286, 0, 0.01622786, 1)
+emission_energy_multiplier = 15.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_arn3v"]
+material = SubResource("StandardMaterial3D_jlq62")
+top_radius = 0.3
+bottom_radius = 0.3
+height = 1.0
+
+[node name="Sniper" type="Sniper" unique_id=1894688439]
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="." unique_id=993744341]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3671128, 0)
+radius = 0.85
+height = 5.0
+material = SubResource("StandardMaterial3D_wd15o")
+
+[node name="Zasieg" type="Area3D" parent="." unique_id=1002462325]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Zasieg" unique_id=1942397051]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+shape = SubResource("SphereShape3D_3fwk8")
+
+[node name="Laser" type="MeshInstance3D" parent="." unique_id=667790948]
+visible = false
+mesh = SubResource("CylinderMesh_arn3v")

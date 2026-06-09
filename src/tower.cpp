@@ -1,4 +1,5 @@
 #include "tower.h"
+#include "spawner.h"
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/area3d.hpp>
@@ -41,7 +42,7 @@ void Tower::upgrade_tower() {
             
             Button* btn = Object::cast_to<Button>(get_node_or_null("/root/Poziom/CanvasLayer/Button"));
             if (btn != nullptr) {
-                String nowy_tekst = "Ulepsz wieze (" + String::num_int64(global_upgrade_cost) + "złota)";
+                String nowy_tekst = "Ulepsz wieze (" + String::num_int64(global_upgrade_cost) + "zlota)";
                 btn->set_text(nowy_tekst);
             }
 

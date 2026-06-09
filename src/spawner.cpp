@@ -19,6 +19,8 @@
 
 using namespace godot;
 
+int Spawner::zabici_wrogowie = 0;
+
 void Spawner::_bind_methods() {}
 
 Spawner::Spawner() {
@@ -38,11 +40,15 @@ Spawner::Spawner() {
     buy_button_was_pressed = false;
     zbudowane_wieze = 0;
 
+    buy_sniper_button_was_pressed = false;
+    is_building_sniper_mode = false;
+
     gra_rozpoczeta = false;
     mnoznik_trudnosci = 1;
     btn_normal_was_pressed = false;
     btn_hard_was_pressed = false;
 
+    sniper_scene = re_loader->load("res://Sniper.tscn");
     tower_scene = re_loader->load("res://Tower.tscn");
     enemy_scene = re_loader->load("res://WagonikZWrogiem.tscn");
 }
@@ -54,20 +60,37 @@ void Spawner::_process(double delta) {
         return;
     }
 
+    // --- LOGIKA GAME OVER I STATYSTYKI ---
     Label* hp_label = Object::cast_to<Label>(get_node_or_null("/root/Poziom/CanvasLayer/BaseHPLabel"));
     if (hp_label != nullptr && hp_label->get_text().to_int() <= 0) {
         
         Control* game_over_panel = Object::cast_to<Control>(get_node_or_null("/root/Poziom/CanvasLayer/GameOverPanel"));
         if (game_over_panel != nullptr) {
+            
+            // 1. Zanim pokazemy panel, chwytamy EndLabel i ladujemy w niego statystyki
+            Label* end_label = Object::cast_to<Label>(game_over_panel->get_node_or_null("EndLabel"));
+            if (end_label != nullptr) {
+                // Skladamy wielolinijkowy tekst uzywajac znaku nowej linii: \n
+                String statystyki = "KONIEC GRY\n\n";
+                // Odejmujemy 1, bo jesli gracz zginal na fali 5, to znaczy ze przetrwal pelne 4
+                statystyki += "Przetrwane fale: " + String::num_int64(obecna_fala - 1) + "\n";
+                statystyki += "Zbudowane wieze: " + String::num_int64(zbudowane_wieze) + "\n";
+                statystyki += "Zabici wrogowie: " + String::num_int64(zabici_wrogowie);
+                
+                end_label->set_text(statystyki);
+            }
+
+            // 2. Pokazujemy gotowy panel
             game_over_panel->show(); 
 
+            // 3. Sprawdzamy przycisk restartu
             Button* btn_restart = Object::cast_to<Button>(game_over_panel->get_node_or_null("BtnRestart"));
             if (btn_restart != nullptr && btn_restart->is_pressed()) {
                 get_tree()->reload_current_scene(); 
             }
         }
         
-        return; 
+        return; // Zatrzymujemy dzialanie Spawnera, zeby wiecej wrogow nie wychodzilo
     }
 
     if (!gra_rozpoczeta) {
@@ -150,70 +173,70 @@ void Spawner::_process(double delta) {
         }
     }
 
-    // nowa obsluga stawiania wiez (RAYCASTING)
+// --- OBSLUGA PRZYCISKOW ---
     Button* buy_btn = Object::cast_to<Button>(get_node_or_null("/root/Poziom/CanvasLayer/BuyTowerButton"));
+    Button* buy_sniper_btn = Object::cast_to<Button>(get_node_or_null("/root/Poziom/CanvasLayer/BuySniperButton"));
     
-    // sprawdzamy przycisk w GUI
+    // zwykla wieza
     if (buy_btn != nullptr) {
         bool is_pressed = buy_btn->is_pressed();
-        
         if (is_pressed && !buy_button_was_pressed) {
-            // wlaczamy lub wylaczamy tryb budowania (jak gracz kliknie znowu, to anuluje)
             is_building_mode = !is_building_mode; 
-            if (is_building_mode) {
-                UtilityFunctions::print("Tryb budowania WLACZONY! Kliknij na mape, by postawic wieze.");
-            } else {
-                UtilityFunctions::print("Tryb budowania WYLACZONY.");
-            }
+            is_building_sniper_mode = false; // Zabezpieczenie: wylaczamy tryb snajpera
+            if (is_building_mode) UtilityFunctions::print("Tryb: Zwykla Wieza");
         }
         buy_button_was_pressed = is_pressed;
     }
 
-    // jesli jestesmy w trybie budowania, czekamy na klikniecie na mapie
-    if (is_building_mode) {
+    // snajper
+    if (buy_sniper_btn != nullptr) {
+        bool is_pressed = buy_sniper_btn->is_pressed();
+        if (is_pressed && !buy_sniper_button_was_pressed) {
+            is_building_sniper_mode = !is_building_sniper_mode;
+            is_building_mode = false; // zabezpieczenie: wylaczamy tryb zwyklej wiezy
+            if (is_building_sniper_mode) UtilityFunctions::print("Tryb: Snajper");
+        }
+        buy_sniper_button_was_pressed = is_pressed;
+    }
+
+    // --- WSPOLNY RAYCASTING DLA OBU WIEZ ---
+    if (is_building_mode || is_building_sniper_mode) {
         Input* input = Input::get_singleton();
-        bool is_clicking = input->is_mouse_button_pressed((MouseButton)1); // lewy przycisk
+        bool is_clicking = input->is_mouse_button_pressed((MouseButton)1);
 
         if (is_clicking && !mouse_was_clicking) {
-            
             Viewport* vp = get_viewport();
             Camera3D* camera = vp->get_camera_3d();
             
             if (camera != nullptr) {
-                // konwersja klikniecia 2D na promien w swiecie 3D
                 Vector2 mouse_pos = vp->get_mouse_position();
                 Vector3 from = camera->project_ray_origin(mouse_pos);
-                Vector3 to = from + camera->project_ray_normal(mouse_pos) * 1000.0; // promien o dlugosci 1000 metrow
+                Vector3 to = from + camera->project_ray_normal(mouse_pos) * 1000.0;
                 
                 PhysicsDirectSpaceState3D* space_state = get_world_3d()->get_direct_space_state();
                 Ref<PhysicsRayQueryParameters3D> query = PhysicsRayQueryParameters3D::create(from, to);
-                
-                // puszczamy promien i sprawdzamy, czy w cos uderzyl
                 Dictionary result = space_state->intersect_ray(query);
                 
                 if (!result.is_empty()) {
-                    
-                    // sprawdzamy w co klinelismy 
                     Node* uderzony_obiekt = Object::cast_to<Node>(result["collider"]);
                     
-                    // jesli obiekt istnieje i nalezy do grupy "ziemia"
                     if (uderzony_obiekt != nullptr && uderzony_obiekt->is_in_group("ziemia")) {
-                        
-                        // mamy punkt uderzenia w dobre miejsce
                         Vector3 pozycja_na_mapie = result["position"];
-                        
-                        // sprawdzamy kase
                         Label* gold_label = Object::cast_to<Label>(get_node_or_null("/root/Poziom/CanvasLayer/GoldLabel"));
-                        if (gold_label != nullptr && tower_scene.is_valid()) {
+                        
+                        if (gold_label != nullptr) {
                             int aktualne_zloto = gold_label->get_text().to_int();
-                            int koszt_wiezy = 200;
                             
-                            if (aktualne_zloto >= koszt_wiezy) {
-                                // zabieramy zloto
-                                gold_label->set_text(String::num_int64(aktualne_zloto - koszt_wiezy));
+                            // wybieramy cene i model na podstawie aktywnego trybu
+                            int koszt = is_building_mode ? 200 : 400;
+                            Ref<PackedScene> wybrana_scena = is_building_mode ? tower_scene : sniper_scene;
+                            
+                            if (aktualne_zloto >= koszt && wybrana_scena.is_valid()) {
+                                // zabieramy kase
+                                gold_label->set_text(String::num_int64(aktualne_zloto - koszt));
                                 
-                                // tworzymy i stawiamy wieze
-                                Node* nowa_wieza = tower_scene->instantiate();
+                                // stawiamy budynek
+                                Node* nowa_wieza = wybrana_scena->instantiate();
                                 get_parent()->add_child(nowa_wieza);
                                 
                                 Node3D* wieza_3d = Object::cast_to<Node3D>(nowa_wieza);
@@ -222,26 +245,27 @@ void Spawner::_process(double delta) {
                                 }
                                 
                                 zbudowane_wieze++;
-                                UtilityFunctions::print("Wieza postawiona! Pozostalo zlota: ", aktualne_zloto - koszt_wiezy);
+                                UtilityFunctions::print("Zbudowano! Pozostalo zlota: ", aktualne_zloto - koszt);
                                 
-                                // wylaczamy tryb budowania
                                 is_building_mode = false;
+                                is_building_sniper_mode = false;
                             } else {
-                                UtilityFunctions::print("Za malo zlota na nowa wieze!");
-                                is_building_mode = false; // anulujemy budowe, bo nie ma kasy
+                                UtilityFunctions::print("Za malo zlota!");
+                                is_building_mode = false;
+                                is_building_sniper_mode = false;
                             }
                         }
                     } else {
-                        // jesli gracz kliknal w sciezke albo cokolwiek innego
-                        UtilityFunctions::print("W tym miejscu nie mozesz budowac!");
-                        is_building_mode = false; // anulujemy tryb budowania
+                        UtilityFunctions::print("Tu nie mozesz budowac!");
+                        is_building_mode = false;
+                        is_building_sniper_mode = false;
                     }
                 }
             }
         }
         mouse_was_clicking = is_clicking;
     } else {
-        mouse_was_clicking = false; // resetujemy myszke, gdy nie jestesmy w trybie budowania
+        mouse_was_clicking = false;
     }
 
 }

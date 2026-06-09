@@ -1,4 +1,5 @@
 #include "enemy.h"
+#include "spawner.h"
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/path_follow3d.hpp>
@@ -64,6 +65,8 @@ void Enemy::take_damage(int amount) {
             int aktualne_zloto = gold_label->get_text().to_int();
             gold_label->set_text(String::num_int64(aktualne_zloto + 15)); 
         }
+
+        Spawner::zabici_wrogowie++; // Zwiekszamy licznik zabitych wrogow
 
         queue_free();
     }

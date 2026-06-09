@@ -21,6 +21,10 @@ private:
     bool btn_normal_was_pressed;
     bool btn_hard_was_pressed;
     Ref<PackedScene> enemy_scene;
+
+    Ref<PackedScene> sniper_scene;
+    bool buy_sniper_button_was_pressed;
+    bool is_building_sniper_mode;
     
     // obsluga fal
     int obecna_fala;
@@ -38,6 +42,7 @@ protected:
 public:
     Spawner();
     ~Spawner();
+    static int zabici_wrogowie;
 
     void _process(double delta) override;
 };

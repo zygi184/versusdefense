@@ -4,6 +4,7 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 #include "tower.h" // plik z wieżą
+#include "sniper.h" // plik z snajperem
 #include "spawner.h" // plik z spawnerem
 
 using namespace godot;
@@ -16,6 +17,7 @@ void initialize_versusdefense_module(ModuleInitializationLevel p_level) {
     ClassDB::register_class<Enemy>();
     ClassDB::register_class<Tower>();
     ClassDB::register_class<Spawner>();
+    ClassDB::register_class<Sniper>();
 }
 
 void uninitialize_versusdefense_module(ModuleInitializationLevel p_level) {
